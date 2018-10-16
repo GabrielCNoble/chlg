@@ -55,9 +55,9 @@ function init_db()
         
         /* add the table... */
         mysqli_query($conn, "CREATE TABLE " . $DATABASE . ".user_data ( Name TEXT NOT NULL , Email TEXT NOT NULL , Phone TEXT NOT NULL );");
-
-        mysqli_close($conn);
     }
+    
+    mysqli_close($conn);
 }
 
 
@@ -71,6 +71,7 @@ function init_db()
 function check_duplicate($name, $email, $phone)
 {
     $conn = connect();
+    $success = false;
     
     if($conn)
     {
@@ -78,7 +79,7 @@ function check_duplicate($name, $email, $phone)
         
         if(!$db_exists)
         {
-            printf("Database doesn't exist, but by now it should... <BR>");
+            print("Database doesn't exist, but by now it should... <BR>");
             exit;
         }
         
@@ -87,13 +88,18 @@ function check_duplicate($name, $email, $phone)
         if(mysqli_fetch_assoc($db_query))
         {
             //print("Duplicate record! <BR>");
-            return true;
+            $success =  true;
         }
         
         mysqli_close($conn);
     }
+    else
+    {
+        print("Could not connect to mysql server!");
+        exit;
+    }
     
-    return false;
+    return $success;
 }
 
 
@@ -116,7 +122,7 @@ function add_record($name, $email, $phone)
         
         if(!$db_exists)
         {
-            printf("Database doesn't exist, but by now it should... <BR>"); 
+            print("Database doesn't exist, but by now it should... <BR>"); 
             exit;
         }
         
@@ -155,13 +161,18 @@ function drop_record($name, $email, $phone)
         
         if(!$db_exists)
         {
-            printf("Database doesn't exist, but by now it should... <BR>");
+            print("Database doesn't exist, but by now it should... <BR>");
             exit;
         }
         
         mysqli_query($conn, "DELETE FROM " . RT_DATABASE . ".user_data WHERE Name = '$name' AND Email = '$email' AND Phone = '$phone'");
         
-        print(mysqli_error($conn));
+        //print(mysqli_error($conn));
+    }
+    else
+    {
+        print("Could not connect to mysql server!");
+        exit;
     }
 }
 
@@ -183,7 +194,7 @@ function get_records()
         
         if(!$db_exists)
         {
-            printf("Database doesn't exist, but by now it should... <BR>");
+            print("Database doesn't exist, but by now it should... <BR>");
             exit;
         }
         
@@ -224,7 +235,7 @@ function list_records()
         
         if(!$db_exists)
         {
-            printf("Database doesn't exist, but by now it should... <BR>");
+            print("Database doesn't exist, but by now it should... <BR>");
             exit;
         }
         
